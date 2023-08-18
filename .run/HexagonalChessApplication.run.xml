@@ -1,0 +1,26 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" factoryName="Application" name="HexagonalChessApplication" nameIsGenerated="true" type="Application">
+    <envs>
+      <env name="MARIADB_USER" value="user" />
+      <env name="MARIADB_PASSWORD" value="password" />
+      <env name="MARIADB_DATABASE" value="hexagonalchess" />
+      <env name="DB_ENCRYPTION_KEY" value="drIeoH5OZAhOTP62tFlD3Q==" />
+      <env name="KEYCLOAK_USER" value="user" />
+      <env name="KEYCLOAK_PASSWORD" value="password" />
+      <env name="KEYCLOAK_REALM" value="HexagonalChess" />
+      <env name="KEYCLOAK_CLIENT_ID" value="hexagonalChess-client" />
+      <env name="PAGINATION_ENCRYPTION_KEY" value="we9Pat8D3BFm1j/Cd8y7GQ==" />
+    </envs>
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.sisimomo.hexagonalchess.backend.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option enabled="true" name="Make" />
+    </method>
+    <module name="hexagonalChess-backend.main" />
+    <option name="MAIN_CLASS_NAME" value="com.github.sisimomo.hexagonalchess.backend.HexagonalChessApplication" />
+  </configuration>
+</component>

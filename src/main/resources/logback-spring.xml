@@ -1,0 +1,58 @@
+<configuration debug="false">
+
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="CONSOLE-without-request-id">
+    <!-- filters in only log that have no marker -->
+    <encoder>
+      <pattern>%d{ISO8601} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n
+      </pattern>
+    </encoder>
+
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <OnMatch>ACCEPT</OnMatch>
+      <OnMismatch>DENY</OnMismatch>
+      <evaluator>
+        <!-- janino (java based) expression -->
+        <expression>
+          return !mdc.containsKey("Slf4jMDCFilter.UUID");
+        </expression>
+      </evaluator>
+    </filter>
+  </appender>
+
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="CONSOLE-request-id">
+    <!-- filters in only log that have no marker -->
+    <encoder>
+      <pattern>%d{ISO8601} %magenta([%thread]) %highlight(%-5level) [%boldWhite(%X{Slf4jMDCFilter.UUID})] %logger{36}.%M - %msg%n</pattern>
+    </encoder>
+
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <OnMatch>ACCEPT</OnMatch>
+      <OnMismatch>DENY</OnMismatch>
+      <evaluator>
+        <!-- janino (java based) expression -->
+        <expression>
+          return mdc.containsKey("Slf4jMDCFilter.UUID");
+        </expression>
+      </evaluator>
+    </filter>
+  </appender>
+
+  <!-- LOG requests at DEBUG level -->
+  <logger level="DEBUG" name="org.springframework.web.filter.CommonsRequestLoggingFilter">
+    <appender-ref ref="CONSOLE-request-id"/>
+    <appender-ref ref="CONSOLE-without-request-id"/>
+  </logger>
+
+  <!-- LOG "com.sisimomo.*" at DEBUG level -->
+  <logger additivity="false" level="DEBUG" name="com.sisimomo">
+    <appender-ref ref="CONSOLE-request-id"/>
+    <appender-ref ref="CONSOLE-without-request-id"/>
+  </logger>
+
+  <!-- LOG everything at INFO level -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE-request-id"/>
+    <appender-ref ref="CONSOLE-without-request-id"/>
+  </root>
+
+</configuration>
