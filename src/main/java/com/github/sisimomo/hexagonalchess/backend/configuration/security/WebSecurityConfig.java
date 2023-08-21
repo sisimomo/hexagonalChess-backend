@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,28 +24,23 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
-@ComponentScan("com.sisimomo.hexagonalchess.backend")
 public class WebSecurityConfig {
-
-  private final JwtAuthConverter jwtAuthConverter;
 
   private final AuthenticationEntryPoint authEntryPoint;
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http, @Value("${frontend.host}") String frontendHost)
-      throws Exception {
-    http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource(frontendHost)))
-        .authorizeHttpRequests(ahrCustomizer -> {
-          ahrCustomizer.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll(); // Swagger
-          ahrCustomizer.anyRequest().authenticated();
-        }).exceptionHandling(ehCustomizer -> ehCustomizer.authenticationEntryPoint(authEntryPoint))
-        .oauth2ResourceServer(orsCustomizer -> orsCustomizer
-            .jwt(jwtCustomizer -> jwtCustomizer.jwtAuthenticationConverter(jwtAuthConverter)))
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.cors(Customizer.withDefaults()).authorizeHttpRequests(ahrCustomizer -> {
+      ahrCustomizer.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll(); // Swagger
+      ahrCustomizer.anyRequest().authenticated();
+    }).exceptionHandling(ehCustomizer -> ehCustomizer.authenticationEntryPoint(authEntryPoint))
+        .oauth2Login(Customizer.withDefaults()).oauth2ResourceServer(c -> c.jwt(Customizer.withDefaults()))
         .csrf(Customizer.withDefaults()).headers(c -> c.frameOptions(FrameOptionsConfig::sameOrigin));
     return http.build();
   }
 
-  private CorsConfigurationSource corsConfigurationSource(String frontendHost) {
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource(@Value("${frontend.host}") String frontendHost) {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of(frontendHost));
     configuration.setAllowedMethods(List.of(CorsConfiguration.ALL));
