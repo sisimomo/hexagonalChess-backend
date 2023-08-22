@@ -25,6 +25,7 @@ import com.github.sisimomo.hexagonalchess.backend.game.service.dto.request.GameC
 import com.github.sisimomo.hexagonalchess.backend.game.service.dto.request.GameJoinUpdateDto;
 import com.github.sisimomo.hexagonalchess.backend.game.service.dto.request.message.GameUpdateBaseMessageDto;
 import com.github.sisimomo.hexagonalchess.backend.game.service.dto.request.message.GameUpdateMovePieceMessageDto;
+import com.github.sisimomo.hexagonalchess.backend.game.service.dto.request.message.GameUpdateSurrenderMessageDto;
 import com.github.sisimomo.hexagonalchess.backend.game.service.error.GameServiceError;
 import com.github.sisimomo.hexagonalchess.backend.game.service.mapper.GameSaveMapper;
 import com.github.sisimomo.hexagonalchess.backend.identityprovider.service.IdentityProviderService;
@@ -178,11 +179,12 @@ public class GameService extends BaseEntityGraphService<GameEntity> {
    * @param friendlyId The friendlyId of the game wanting to be joined.
    */
   public void gameSaveUpdate(GameUpdateBaseMessageDto updateDto, String friendlyId) {
-    GameEntity entity;
+    GameEntity entity =
+        getByFriendlyId(friendlyId, getEntityGraphBySuffix(GameEntity.ENTITY_GRAPH_WITH_PIECES_AND_HISTORY_SUFFIX));
     if (updateDto instanceof GameUpdateMovePieceMessageDto gameUpdateMovePieceMessageDto) {
-      entity =
-          getByFriendlyId(friendlyId, getEntityGraphBySuffix(GameEntity.ENTITY_GRAPH_WITH_PIECES_AND_HISTORY_SUFFIX));
       movePiece(entity, gameUpdateMovePieceMessageDto);
+    } else if (updateDto instanceof GameUpdateSurrenderMessageDto gameUpdateSurrenderMessageDto) {
+      surrender(entity, gameUpdateSurrenderMessageDto);
     } else {
       throw new UncheckedException(GameServiceError.UNSUPPORTED_UPDATE, log::error);
     }
@@ -193,7 +195,7 @@ public class GameService extends BaseEntityGraphService<GameEntity> {
    * Move a piece in the provided game if the logged-in user is one of the players in the game and if
    * it is the user's turn.
    *
-   * @param entity The game entity wanted to be joined.
+   * @param entity The game entity wanted to be updated.
    * @param updateDto Contains information needed to move a piece in a game.
    */
   public void movePiece(GameEntity entity, GameUpdateMovePieceMessageDto updateDto) {
@@ -210,6 +212,24 @@ public class GameService extends BaseEntityGraphService<GameEntity> {
     movePiece(game, from, coordinateMapper.convertToModel(updateDto.getTo()),
         pieceTypeMapper.convertToModel(updateDto.getWantedPromotionPieceType()));
 
+    entity.setGameSave(gameSaveMapper.convertToDao(game));
+  }
+
+  /**
+   * Surrender in the provided game if the logged-in user is one of the players in the game.
+   *
+   * @param entity The game entity wanted to be updated.
+   * @param updateDto Contains information needed to surrender.
+   */
+  public void surrender(GameEntity entity, GameUpdateSurrenderMessageDto updateDto) {
+    throwExceptionIfGameIsNotFull(entity);
+    PieceSide loggedInUserSide = getPlayerSide(entity);
+    Game game = gameSaveMapper.convertToModel(entity.getGameSave());
+    try {
+      game.surrender(loggedInUserSide);
+    } catch (GameOverException e) {
+      throw new UncheckedException(GameServiceError.GAME_IS_OVER, log::debug, e, e.getMessage());
+    }
     entity.setGameSave(gameSaveMapper.convertToDao(game));
   }
 
