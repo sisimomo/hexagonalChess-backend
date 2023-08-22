@@ -154,6 +154,18 @@ public class Game {
   }
 
   /**
+   * Set the game state to indicate that the game has ended by a user surrendering.
+   * 
+   * @param pieceSide The side of the player who is surrendering.
+   */
+  public void surrender(PieceSide pieceSide) throws GameOverException {
+    if (state.isEnded()) {
+      throw new GameOverException(state);
+    }
+    state = pieceSide.equals(PieceSide.WHITE) ? GameState.BLACK_WON_BY_SURRENDER : GameState.WHITE_WON_BY_SURRENDER;
+  }
+
+  /**
    * Promotes a pawn to a desired piece type and returns the new piece.
    *
    * @param pawn Represents the pawn piece that needs to be promoted.
