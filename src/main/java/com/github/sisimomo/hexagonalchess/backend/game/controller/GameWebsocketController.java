@@ -1,11 +1,15 @@
 package com.github.sisimomo.hexagonalchess.backend.game.controller;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.github.sisimomo.hexagonalchess.backend.commons.dto.response.ErrorResponse;
+import com.github.sisimomo.hexagonalchess.backend.commons.exception.UncheckedException;
 import com.github.sisimomo.hexagonalchess.backend.game.service.GameService;
 import com.github.sisimomo.hexagonalchess.backend.game.service.dto.request.message.GameUpdateBaseMessageDto;
 import com.github.sisimomo.hexagonalchess.backend.game.service.dto.response.message.GameBaseMessageDto;
@@ -33,6 +37,12 @@ public class GameWebsocketController {
     gameService.gameSaveUpdate(gameUpdateMessageDto, friendlyId);
     return gameMessageDtoMapper.convertToMessageDto(gameUpdateMessageDto,
         identityProviderService.getLoggedInUserUuid());
+  }
+
+  @MessageExceptionHandler(UncheckedException.class)
+  @SendToUser("/topic/game/{friendlyId}/errors")
+  public ErrorResponse handleException(UncheckedException ex) {
+    return new ErrorResponse(ex.getFormattedUserErrorMessage(), ex.getError().getErrorId());
   }
 
 }
