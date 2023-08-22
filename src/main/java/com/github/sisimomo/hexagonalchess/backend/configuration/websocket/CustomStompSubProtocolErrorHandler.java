@@ -16,7 +16,7 @@ public class CustomStompSubProtocolErrorHandler extends StompSubProtocolErrorHan
     if (ex.getCause() instanceof UncheckedException uncheckedException) {
       accessor.setMessage(uncheckedException.getUserMessage());
     } else {
-      accessor.setMessage(ex.getMessage());
+      accessor.setMessage("System error. Please try again later");
     }
     accessor.setLeaveMutable(true);
 
