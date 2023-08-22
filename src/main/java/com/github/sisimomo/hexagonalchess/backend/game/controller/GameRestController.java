@@ -44,13 +44,9 @@ import lombok.extern.slf4j.Slf4j;
 public class GameRestController extends BaseRestController {
 
   private final GameMapper mapper;
-
   private final GameService service;
-
   private final KeysetPaginationService keysetPaginationService;
-
   private final IdentityProviderService identityProviderService;
-
   private final SimpMessagingTemplate simpMessagingTemplate;
 
   @Operation(summary = "Return detailed information about a specific game")

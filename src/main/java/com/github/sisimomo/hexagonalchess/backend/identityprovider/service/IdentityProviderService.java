@@ -1,7 +1,5 @@
 package com.github.sisimomo.hexagonalchess.backend.identityprovider.service;
 
-import com.github.sisimomo.hexagonalchess.backend.identityprovider.service.error.IdentityProviderServiceError;
-import com.github.sisimomo.hexagonalchess.backend.identityprovider.service.mapper.UserMapper;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,10 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import com.github.sisimomo.hexagonalchess.backend.commons.exception.UncheckedException;
+import com.github.sisimomo.hexagonalchess.backend.identityprovider.service.error.IdentityProviderServiceError;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class IdentityProviderService {
 
   private final Keycloak keycloakService;
-  private final UserMapper mapper;
   @Value("${keycloak.realm}")
   private String keycloakRealm;
 
@@ -66,8 +63,8 @@ public class IdentityProviderService {
     return getByUid(getLoggedInUserUuid());
   }
 
-  public void setLoggedInUser(JwtAuthenticationToken jwtAuthenticationToken) {
-    SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
+  public void setLoggedInUser(Authentication authentication) {
+    SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 
   /**

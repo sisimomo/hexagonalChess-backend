@@ -109,6 +109,4 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         HttpStatus.UNAUTHORIZED);
   }
 
-
-
 }

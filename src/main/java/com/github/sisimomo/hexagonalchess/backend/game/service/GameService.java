@@ -64,13 +64,13 @@ public class GameService extends BaseEntityGraphService<GameEntity> {
   public Window<GameEntity> getAllLoggedInUserGames(String cursor, int maxResults, Direction direction) {
     return keysetPaginationService.getAll(repository,
         GameRepository.Specs.byWhiteUserUuidOrBlackUserUuid(identityProviderService.getLoggedInUserUuid()),
-        Sort.by(Order.by(GameEntity_.FRIENDLY_ID)), cursor, maxResults, direction);
+        Sort.by(Order.by(GameEntity_.UPDATE_DATE)), cursor, maxResults, direction);
   }
 
   public Window<GameEntity> getAllPasswordlessGamesMissingPlayer(String cursor, int maxResults, Direction direction) {
     return keysetPaginationService.getAll(repository,
         GameRepository.Specs.byBlackUserUuidIsNull().and(GameRepository.Specs.byPasswordIsNull()),
-        Sort.by(Order.by(GameEntity_.FRIENDLY_ID)), cursor, maxResults, direction);
+        Sort.by(Order.by(GameEntity_.UPDATE_DATE)), cursor, maxResults, direction);
   }
 
   /**
