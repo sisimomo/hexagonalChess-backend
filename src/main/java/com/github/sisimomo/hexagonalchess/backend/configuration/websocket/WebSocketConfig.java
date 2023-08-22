@@ -2,20 +2,15 @@ package com.github.sisimomo.hexagonalchess.backend.configuration.websocket;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
-@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-  private final TopicSubscriptionInterceptor[] topicSubscriptionInterceptors;
   @Value("${frontend.host}")
   private String frontendHost;
 
@@ -29,11 +24,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.setErrorHandler(new CustomStompSubProtocolErrorHandler());
     registry.addEndpoint("/ws").setAllowedOrigins(frontendHost);
-  }
-
-  @Override
-  public void configureClientInboundChannel(ChannelRegistration registration) {
-    registration.interceptors(topicSubscriptionInterceptors);
   }
 
 }
