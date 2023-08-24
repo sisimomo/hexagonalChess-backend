@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.persistence.NamedEntityGraphs;
 
 @OpenAPIDefinition(
-    info = @Info(title = "Hexagonal Chess API", version = "1.0.0",
+    info = @Info(title = "Hexagonal Chess API", version = "1.1.0",
         description = "This is the Hexagonal Chess API description",
         license = @License(name = "Licence", url = "https://opensource.org/license/mit/"),
         contact = @Contact(name = "Simon Vallières", email = "simon@vallieres.ca")),
