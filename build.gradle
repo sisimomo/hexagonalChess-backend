@@ -23,7 +23,7 @@ ext {
     lombokVersion = "1.18.28"
     lombokMapstructBinding = "0.2.0"
     mapstructVersion = "1.5.5.Final"
-    jpamodelgenVersion = "6.2.2.Final"
+    jpamodelgenVersion = "6.3.0.Final"
     springDataJpaEntityGraphVersion = "3.0.1"
     swaggerVersion = "2.2.0"
     janinoVersion = "3.1.10"
