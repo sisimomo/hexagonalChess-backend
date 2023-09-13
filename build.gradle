@@ -28,7 +28,7 @@ ext {
     swaggerVersion = "2.2.0"
     janinoVersion = "3.1.10"
     springBootDataSourceDecoratorVersion = "1.9.0"
-    keycloakVersion = "22.0.1"
+    keycloakVersion = "22.0.3"
     nanoidVersion = "2.0.0"
     jansiVersion = "2.4.0"
 }
